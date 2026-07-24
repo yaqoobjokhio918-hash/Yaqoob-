@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>Inam Ali Jokhio Smart Notes</title>
+<style>
+body{font-family:Arial;margin:20px;background:#111;color:#fff}
+.light{background:#fff;color:#111}
+input,textarea,button{width:100%;padding:10px;margin:6px 0}
+.card{border:1px solid #666;padding:8px;margin:8px 0}
+</style></head><body>
+<h2>📒 Inam Ali Jokhio Smart Notes</h2>
+<input id="title" placeholder="Title">
+<textarea id="note" placeholder="Write note"></textarea>
+<button onclick="saveNote()">💾 Save</button>
+<button onclick="render()">📂 Open Saved Notes</button>
+<button onclick="delAll()">🗑 Delete All</button>
+<button onclick="toggleMode()">🌙☀️ Mode</button>
+<input id="search" placeholder="Search" onkeyup="render()">
+<div id="list"></div>
+<script>
+let notes=JSON.parse(localStorage.getItem("notes")||"[]");
+function sync(){localStorage.setItem("notes",JSON.stringify(notes));}
+function saveNote(){
+let t=title.value.trim(),n=note.value.trim();
+if(!t||!n){alert("Enter title and note");return;}
+notes.push({t,n});sync();title.value="";note.value="";render();alert("Saved Successfully");
+}
+function render(){
+let q=search.value.toLowerCase();list.innerHTML="";
+notes.forEach((x,i)=>{if((x.t+x.n).toLowerCase().includes(q)){
+list.innerHTML+=`<div class="card"><h3>${x.t}</h3><p>${x.n}</p><button onclick="del(${i})">Delete</button></div>`;}});
+}
+function del(i){notes.splice(i,1);sync();render();}
+function delAll(){if(confirm("Delete all?")){notes=[];sync();render();}}
+function toggleMode(){document.body.classList.toggle("light");}
+render();
+</script></body></html>
